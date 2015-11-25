@@ -9,6 +9,12 @@ use utf8;
 use Moo;
 use namespace::clean;
 
+has 'flotum_api' => (is => 'rw', default => 'default.flotum.com');
+
+has 'sandbox' => (is => 'rw', default => '0');
+
+has 'merchant_api_key' => (is => 'rw', required => 1);
+
 
 
 1;
