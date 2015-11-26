@@ -5,17 +5,33 @@ our $VERSION = '0.01';
 
 use warnings;
 use utf8;
-
+use Carp qw/croak/;
 use Moo;
 use namespace::clean;
 
-has 'flotum_api' => (is => 'rw', default => 'default.flotum.com');
+use Net::Flotum::Object::Customer;
 
-has 'sandbox' => (is => 'rw', default => '0');
+has 'flotum_api' => ( is => 'rw', default => 'default.flotum.com' );
+has 'merchant_id'  => ( is => 'rw', required => 1 );
+has 'merchant_api_key' => ( is => 'rw', required => 1 );
 
-has 'merchant_api_key' => (is => 'rw', required => 1);
+sub load_customer {
+    my ( $self, %opts ) = @_;
 
+    croak 'missing parameter: `remote_id` or `id` is required'
+      if ( !exists $opts{remote_id} || !defined $opts{remote_id} )
+      || ( !exists $opts{remote_id} || !defined $opts{remote_id} );
 
+}
+
+sub new_customer {
+    my ( $self, %opts ) = @_;
+
+    return Net::Flotum::Object::Customer->new(
+        flotum      => $self,
+        %opts
+    );
+}
 
 1;
 
@@ -36,6 +52,7 @@ Net-Flotum - use Flotum as your payment gateway
         flotum_api       => 'default.flotum.com'
     );
 
+    # returns a Net::Flotum::Object::Customer
     $customer = $flotum->new_customer(
 
         name  => 'name here',
@@ -43,6 +60,7 @@ Net-Flotum - use Flotum as your payment gateway
 
     );
 
+    # returns a Net::Flotum::Object::Customer
     $customer = $flotum->load_customer(
 
         # via remote_id
@@ -52,8 +70,10 @@ Net-Flotum - use Flotum as your payment gateway
 
     );
 
+    # returns a hash reference containing details for creating an credit card.
     $http_description = $customer->new_credit_card();
 
+    # returns a list of Net::Flotum::Object::CreditCard
     @credit_cards = $customer->list_credit_cards();
 
 
@@ -72,7 +92,7 @@ Renato CRON E<lt>rentocron@cpan.orgE<gt>
 
 Copyright 2015-2016 Renato CRON
 
-Thanks to http://eokoe.com
+Owing to http://eokoe.com
 
 =head1 LICENSE
 
