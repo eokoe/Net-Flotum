@@ -9,11 +9,23 @@ use Carp qw/croak/;
 use Moo;
 use namespace::clean;
 
+use Net::Flotum::API::Customer;
+use Net::Flotum::API::RequestHandler;
+use Net::Flotum::Logger::Log4perl;
+
 use Net::Flotum::Object::Customer;
 
-has 'flotum_api' => ( is => 'rw', default => 'default.flotum.com' );
-has 'merchant_id'  => ( is => 'rw', required => 1 );
+has 'logger'    => ( is => 'ro', builder => '_build_logger',    lazy => 1 );
+has 'requester' => ( is => 'ro', builder => '_build_requester', lazy => 1 );
 has 'merchant_api_key' => ( is => 'rw', required => 1 );
+
+sub _build_requester {
+    Net::Flotum::API::RequestHandler->new;
+}
+
+sub _build_logger {
+    Net::Flotum::Logger::Log4perl->new->logger;
+}
 
 sub load_customer {
     my ( $self, %opts ) = @_;
@@ -27,9 +39,13 @@ sub load_customer {
 sub new_customer {
     my ( $self, %opts ) = @_;
 
+    my $customer_data = Net::Flotum::API::Customer->new( flotum => $self, )->exec_new_customer(%opts);
+    use DDP;
+    p $customer_data;
+
     return Net::Flotum::Object::Customer->new(
-        flotum      => $self,
-        %opts
+        flotum => $self,
+        $customer_data
     );
 }
 
@@ -49,7 +65,6 @@ Net-Flotum - use Flotum as your payment gateway
 
     $flotum = Net::Flotum->new(
         merchant_api_key => 'foobar',
-        flotum_api       => 'default.flotum.com'
     );
 
     # returns a Net::Flotum::Object::Customer

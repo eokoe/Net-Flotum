@@ -6,7 +6,10 @@ requires 'HTTP::Request::Common';
 requires 'Carp';
 requires 'namespace::clean';
 requires 'JSON', '2.34';
+requires 'JSON::MaybeXS';
 requires 'Stash::REST';
+requires 'Furl';
+requires 'Log::Log4perl';
 
 on test => sub {
     requires 'Test::More', '0.96';
