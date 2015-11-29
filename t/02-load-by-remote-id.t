@@ -1,0 +1,22 @@
+use strict;
+use Test::More;
+
+use_ok('Net::Flotum');
+ok( my $flotum = Net::Flotum->new( merchant_api_key => 'abc' ), 'new ok' );
+
+my $cus2 = $flotum->new_customer(
+    name           => 'cron',
+    remote_id      => '111',
+    legal_document => 11
+);
+
+is( $cus2->loaded, '0', 'object is not loaded' );
+
+my $cus = $flotum->load_customer( remote_id => '111' );
+
+is( $cus->loaded, '1',    'object is already loaded' );
+is( $cus->name,   'cron', 'name is cron' );
+
+is( $cus2->id, $cus->id, 'id is the same' );
+
+done_testing;

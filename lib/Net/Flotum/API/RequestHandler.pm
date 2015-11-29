@@ -40,7 +40,9 @@ sub _build_stash {
             return decode_json( $res->content );
         }
     );
-    eval q|$st->add_trigger('process_response', sub{use DDP; p $_[1];}) | if exists $ENV{TRACE} && $ENV{TRACE};
+    eval q|$st->add_trigger('process_response', sub{use DDP; my $x = $_[1];
+        my $req = $x->{req}->as_string;
+     my $res = $x->{res}->as_string; p $req; p $res;}) | if exists $ENV{TRACE} && $ENV{TRACE};
     return $st;
 }
 

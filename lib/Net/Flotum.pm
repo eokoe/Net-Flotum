@@ -30,10 +30,26 @@ sub _build_logger {
 sub load_customer {
     my ( $self, %opts ) = @_;
 
-    croak 'missing parameter: `remote_id` or `id` is required'
-      if ( !exists $opts{remote_id} || !defined $opts{remote_id} )
-      || ( !exists $opts{remote_id} || !defined $opts{remote_id} );
+    my $cus;
+    if ( exists $opts{id} ) {
+        $cus = Net::Flotum::Object::Customer->new(
+            flotum => $self,
+            id     => $opts{id}
+        );
+        $cus->_load_from_id;
+    }
+    elsif ( exists $opts{remote_id} ) {
+        $cus = Net::Flotum::Object::Customer->new(
+            flotum => $self,
+            id     => 'this workaround is embarrassed'
+        );
+        $cus->_load_from_remote_id( $opts{remote_id} );
+    }
+    else {
+        croak 'missing parameter: `remote_id` or `id` is required';
+    }
 
+    return $cus;
 }
 
 sub new_customer {
@@ -45,6 +61,17 @@ sub new_customer {
         flotum => $self,
         %$customer_id
     );
+}
+
+sub _get_customer_data {
+    my ( $self, %opts ) = @_;
+
+    croak 'missing parameter: `remote_id` or `id` is required'
+      unless ( exists $opts{remote_id} && defined $opts{remote_id} )
+      || ( exists $opts{id} && defined $opts{id} );
+
+    my $customer_data = Net::Flotum::API::Customer->new( flotum => $self, )->exec_load_customer(%opts);
+
 }
 
 1;

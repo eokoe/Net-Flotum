@@ -9,7 +9,8 @@ my $cus = $flotum->new_customer(
     remote_id      => '111',
     legal_document => 11
 );
-use DDP; p $cus;
-p $cus->name;
+is($cus->loaded, '0', 'object is not loaded');
+is($cus->name, 'cron', 'name lazy loaded ok');
+is($cus->loaded, '1', 'object is loaded');
 
 done_testing;

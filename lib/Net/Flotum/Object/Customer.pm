@@ -6,9 +6,9 @@ use Carp qw/croak/;
 use Moo;
 use namespace::clean;
 
-has 'flotum' => ( is => 'ro', weak_ref => 1, );
-has 'id' => ( is => 'ro', required => 1 );
-
+has 'flotum' => ( is => 'ro',  weak_ref => 1, );
+has 'id'     => ( is => 'rwp', required => 1 );
+has 'loaded' => ( is => 'rwp', default  => 0 );
 
 for (
     qw/
@@ -18,20 +18,44 @@ for (
     default_address_inputed_at
     /
   ) {
-    has $_ => ( is => 'ro' );
+    has $_ => ( is => 'rwp' );
     before $_ => sub {
-        use DDP; p "foo";
-    }
+        my ($self) = @_;
+        return if $self->loaded;
+
+        $self->_load_from_id;
+      }
 }
 
+sub _load_from_id {
+    my ($self) = @_;
+    my $mydata = $self->flotum->_get_customer_data( id => $self->id );
+    for my $field ( keys %$mydata ) {
+        if ( $self->can($field) ) {
+            my $method = "_set_$field";
+            $self->$method( $mydata->{$field} );
+        }
+    }
+    $self->_set_loaded(1);
+}
 
+sub _load_from_remote_id {
+    my ( $self, $remote_id ) = @_;
+    my $mydata = $self->flotum->_get_customer_data( remote_id => $remote_id );
+    for my $field ( keys %$mydata ) {
+        if ( $self->can($field) ) {
+            my $method = "_set_$field";
+            $self->$method( $mydata->{$field} );
+        }
+    }
+    $self->_set_loaded(1);
+}
 
 sub new_credit_card {
 
 }
 
 sub list_credit_cards {
-
 
 }
 
