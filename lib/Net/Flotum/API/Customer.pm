@@ -16,7 +16,7 @@ sub exec_new_customer {
     my $requester = $self->flotum->requester;
     my $logger    = $self->flotum->logger;
 
-    request_with_retries(
+    my (%ret) = request_with_retries(
         logger    => $logger,
         requester => $requester,
         name      => 'create user',
@@ -28,13 +28,11 @@ sub exec_new_customer {
                 'X-api-key'    => $self->flotum->merchant_api_key
             ],
             code  => 201,
-            stash => 'new-customer',
-
             data => encode_json( \%opts )
         ]
     );
 
-    return {}
+    return $ret{obj};
 
 }
 

@@ -7,20 +7,24 @@ use Moo;
 use namespace::clean;
 
 has 'flotum' => ( is => 'ro', weak_ref => 1, );
+has 'id' => ( is => 'ro', required => 1 );
 
-for (qw/name remote_id legal_document/) {
-    has $_ => ( is => 'ro', required => 1 );
-}
 
 for (
     qw/
+    name remote_id legal_document
     default_address_name default_address_zip default_address_street default_address_number
     default_address_observation default_address_neighbourhood default_address_city default_address_state
     default_address_inputed_at
     /
   ) {
     has $_ => ( is => 'ro' );
+    before $_ => sub {
+        use DDP; p "foo";
+    }
 }
+
+
 
 sub new_credit_card {
 

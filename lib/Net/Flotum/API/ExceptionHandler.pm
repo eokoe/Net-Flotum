@@ -15,14 +15,15 @@ sub request_with_retries {
     my $sleep = $opts{sleep} || 1;
     my $name  = $opts{name};
 
-        my ( $req, $res );
+    my ( $obj, $req, $res );
     while ( $tries-- ) {
 
         my $func = $opts{method};
-        eval {
+        $obj = eval {
             $requester->stash->$func(
                 @{ $opts{params} },
                 process_response => sub {
+                    use DDP; p "here";
                     $res = $_[0]->{res};
                     $req = $_[0]->{req};
                 },
@@ -39,7 +40,8 @@ sub request_with_retries {
         $logger->info("trying $tries more times...");
         sleep $sleep;
     }
-    return (res => $res);
+
+    return (obj => $obj, res => $res);
 }
 
 sub log_error_txt {

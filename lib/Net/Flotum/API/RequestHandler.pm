@@ -6,10 +6,10 @@ use Carp qw/croak/;
 use Moo;
 use namespace::clean;
 use Stash::REST;
-
+use JSON::MaybeXS;
 use Furl;
 
-has 'flotum_api' => ( is => 'rw', default => 'http://192.168.1.43:8988' );
+has 'flotum_api' => ( is => 'rw', default => 'http://interno.b-datum.com:8988' );
 has 'timeout'    => ( is => 'ro', default => 10 );
 
 has 'stash' => ( is => 'ro', lazy => 1, builder => '_build_stash' );

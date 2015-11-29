@@ -10,5 +10,6 @@ my $cus = $flotum->new_customer(
     legal_document => 11
 );
 use DDP; p $cus;
+p $cus->name;
 
 done_testing;

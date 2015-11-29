@@ -39,13 +39,11 @@ sub load_customer {
 sub new_customer {
     my ( $self, %opts ) = @_;
 
-    my $customer_data = Net::Flotum::API::Customer->new( flotum => $self, )->exec_new_customer(%opts);
-    use DDP;
-    p $customer_data;
+    my $customer_id = Net::Flotum::API::Customer->new( flotum => $self, )->exec_new_customer(%opts);
 
     return Net::Flotum::Object::Customer->new(
         flotum => $self,
-        $customer_data
+        %$customer_id
     );
 }
 
