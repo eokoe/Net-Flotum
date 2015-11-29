@@ -7,7 +7,7 @@ requires 'Carp';
 requires 'namespace::clean';
 requires 'JSON', '2.34';
 requires 'JSON::MaybeXS';
-requires 'Stash::REST';
+requires 'Stash::REST', '0.08';
 requires 'Furl';
 requires 'Log::Log4perl';
 

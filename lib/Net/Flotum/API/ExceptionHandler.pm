@@ -23,15 +23,25 @@ sub request_with_retries {
             $requester->stash->$func(
                 @{ $opts{params} },
                 process_response => sub {
-                    use DDP; p "here";
                     $res = $_[0]->{res};
                     $req = $_[0]->{req};
                 },
             );
         };
         last unless $@;
-        $logger->error( &log_error_txt( $@, $req, $res ) );
 
+        if ( $res->code == 404 ) {
+            die "Resource does not exists\n";
+        }
+        if ( $res->code == 400 && ref $obj eq 'HASH' && ref $obj->{error} eq 'form_error' ) {
+            my $msg = "Invalid data:\n";
+            $msg .= "$_ = " . $obj->{form_error}{$_} . "\n" for keys %{$obj->{form_error}};
+            $logger->error( &log_error_txt( $@, $req, $res ) );
+            $logger->error( $msg );
+            die "$msg\n";
+        }
+
+        $logger->error( &log_error_txt( $@, $req, $res ) );
         # erros nao 500 desiste na hora.
         if ( $tries == 0 || $res->code != 500 ) {
             $logger->error( "Giving up $name. Reponse code " . $res->code );

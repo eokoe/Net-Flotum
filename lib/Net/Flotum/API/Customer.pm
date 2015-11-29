@@ -64,7 +64,7 @@ sub exec_load_customer {
 
     my $obj = $ret{obj};
     $obj = $obj->{customers}[0] if exists $obj->{customers};
-    confess 'Customer not found' unless $obj->{id};
+    die "Resource does not exists\n" unless $obj->{id};
     return $obj;
 }
 
