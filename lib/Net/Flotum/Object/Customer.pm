@@ -58,7 +58,7 @@ sub add_credit_card {
 
     return {
         method => 'POST',
-        href   => ( join '/', $self->flotum->requester->flotum_api, 'customers', $self->id, '?api_key=' . $session ),
+        href   => ( join '/', $self->flotum->requester->flotum_api, 'customers', $self->id, 'credit-cards', '?api_key=' . $session ),
         valid_until => time + 900,
         fields      => {
             (

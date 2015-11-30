@@ -14,6 +14,8 @@ my $info = $cus->add_credit_card;
 is( $info->{fields}{number}, '*CreditCard', 'Credit card number is required' );
 
 ok( $info->{href},        'request has an href' );
+like( $info->{href}, qr|/credit-cards|, 'request href like *credit-cards*' );
+
 ok( $info->{valid_until}, 'request has a time to expire.' );
 
 done_testing;
