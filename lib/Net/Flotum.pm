@@ -11,7 +11,7 @@ use namespace::clean;
 
 use Net::Flotum::API::Customer;
 use Net::Flotum::API::RequestHandler;
-use Net::Flotum::Logger::Log4perl;
+
 
 use Net::Flotum::Object::Customer;
 
@@ -24,6 +24,7 @@ sub _build_requester {
 }
 
 sub _build_logger {
+    require Net::Flotum::Logger::Log4perl;
     Net::Flotum::Logger::Log4perl->new->logger;
 }
 
