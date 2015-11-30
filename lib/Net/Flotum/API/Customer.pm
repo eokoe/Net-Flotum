@@ -68,4 +68,33 @@ sub exec_load_customer {
     return $obj;
 }
 
+sub exec_get_customer_session {
+    my ( $self, %opts ) = @_;
+
+    my $requester = $self->flotum->requester;
+    my $logger    = $self->flotum->logger;
+
+    my (%ret) = request_with_retries(
+        logger    => $logger,
+        requester => $requester,
+        name      => 'get temporary user session',
+        method    => 'rest_post',
+        params    => [
+            ['merchant-customer-sessions'],
+            headers => [
+                'Content-Type' => 'application/json',
+                'X-api-key'    => $self->flotum->merchant_api_key
+            ],
+            code                => 201,
+            automatic_load_item => 0,
+            data                => encode_json {
+                merchant_customer_id => $opts{id},
+                provisional          => 1,           # JSON->true has the same effect
+            }
+        ]
+    );
+
+    return $ret{obj};
+}
+
 1;

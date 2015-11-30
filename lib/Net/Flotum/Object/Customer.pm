@@ -51,8 +51,36 @@ sub _load_from_remote_id {
     $self->_set_loaded(1);
 }
 
-sub new_credit_card {
+sub add_credit_card {
+    my ($self) = @_;
 
+    my $session = $self->flotum->_get_customer_session_key( id => $self->id );
+
+    return {
+        method => 'POST',
+        href   => ( join '/', $self->flotum->requester->flotum_api, 'customers', $self->id, '?api_key=' . $session ),
+        valid_until => time + 900,
+        fields      => {
+            (
+                map { $_ => '?Str' }
+                  qw/address_name
+                  address_zip
+                  address_street
+                  address_number
+                  address_observation
+                  address_neighbourhood
+                  address_city
+                  address_state/
+            ),
+            ( map { $_ => '*Str' } qw/name_on_card legal_document/ ),
+            number   => '*CreditCard',
+            csc      => '*CSC',
+            brand    => '*Brand',
+            validity => '*YYYYDD',
+            address_inputed_at => '?GmtDateTime',
+        },
+        accept => 'application/json'
+    };
 }
 
 sub list_credit_cards {

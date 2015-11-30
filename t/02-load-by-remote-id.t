@@ -2,7 +2,7 @@ use strict;
 use Test::More;
 
 use_ok('Net::Flotum');
-ok( my $flotum = Net::Flotum->new( merchant_api_key => 'abc' ), 'new ok' );
+ok( my $flotum = Net::Flotum->new( merchant_api_key => 'm-just-testing' ), 'new ok' );
 
 my $cus2 = $flotum->new_customer(
     name           => 'cron',

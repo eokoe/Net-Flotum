@@ -12,12 +12,13 @@ use namespace::clean;
 use Net::Flotum::API::Customer;
 use Net::Flotum::API::RequestHandler;
 
-
 use Net::Flotum::Object::Customer;
 
 has 'logger'    => ( is => 'ro', builder => '_build_logger',    lazy => 1 );
 has 'requester' => ( is => 'ro', builder => '_build_requester', lazy => 1 );
 has 'merchant_api_key' => ( is => 'rw', required => 1 );
+
+has 'customer_api' => ( is => 'ro', builder => '_build_customer_api', lazy => 1 );
 
 sub _build_requester {
     Net::Flotum::API::RequestHandler->new;
@@ -26,6 +27,11 @@ sub _build_requester {
 sub _build_logger {
     require Net::Flotum::Logger::Log4perl;
     Net::Flotum::Logger::Log4perl->new->logger;
+}
+
+sub _build_customer_api {
+    my ($self) = @_;
+    Net::Flotum::API::Customer->new( flotum => $self, );
 }
 
 sub load_customer {
@@ -56,7 +62,7 @@ sub load_customer {
 sub new_customer {
     my ( $self, %opts ) = @_;
 
-    my $customer_id = Net::Flotum::API::Customer->new( flotum => $self, )->exec_new_customer(%opts);
+    my $customer_id = $self->customer_api->exec_new_customer(%opts);
 
     return Net::Flotum::Object::Customer->new(
         flotum => $self,
@@ -71,8 +77,17 @@ sub _get_customer_data {
       unless ( exists $opts{remote_id} && defined $opts{remote_id} )
       || ( exists $opts{id} && defined $opts{id} );
 
-    my $customer_data = Net::Flotum::API::Customer->new( flotum => $self, )->exec_load_customer(%opts);
+    return $self->customer_api->exec_load_customer(%opts);
 
+}
+
+sub _get_customer_session_key {
+    my ( $self, %opts ) = @_;
+
+    croak 'missing parameter: `id` is required'
+      unless ( exists $opts{id} && defined $opts{id} );
+
+    return $self->customer_api->exec_get_customer_session(%opts)->{api_key};
 }
 
 1;

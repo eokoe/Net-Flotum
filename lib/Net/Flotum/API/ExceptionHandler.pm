@@ -30,7 +30,7 @@ sub request_with_retries {
         };
         last unless $@;
 
-        if ( $res->code == 404 ) {
+        if ( $res->code == 404  && $res->content !~ /Endpoint not found/) {
             die "Resource does not exists\n";
         }
         if ( $res->code == 400 && ref $obj eq 'HASH' && ref $obj->{error} eq 'form_error' ) {
