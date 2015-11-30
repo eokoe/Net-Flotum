@@ -5,7 +5,7 @@ our $VERSION = '0.01';
 
 use warnings;
 use utf8;
-use Carp qw/croak/;
+use Carp qw/croak confess/;
 use Moo;
 use namespace::clean;
 
@@ -73,7 +73,7 @@ sub new_customer {
 sub _get_customer_data {
     my ( $self, %opts ) = @_;
 
-    croak 'missing parameter: `remote_id` or `id` is required'
+    confess 'missing parameter: `remote_id` or `id` is required'
       unless ( exists $opts{remote_id} && defined $opts{remote_id} )
       || ( exists $opts{id} && defined $opts{id} );
 
@@ -84,10 +84,20 @@ sub _get_customer_data {
 sub _get_customer_session_key {
     my ( $self, %opts ) = @_;
 
-    croak 'missing parameter: `id` is required'
+    confess 'missing parameter: `id` is required'
       unless ( exists $opts{id} && defined $opts{id} );
 
     return $self->customer_api->exec_get_customer_session(%opts)->{api_key};
+}
+
+sub _get_list_customer_credit_cards {
+    my ( $self, %opts ) = @_;
+
+    confess 'missing parameter: `id` is required'
+      unless ( exists $opts{id} && defined $opts{id} );
+
+    my $arr = $self->customer_api->exec_list_credit_cards(%opts)->{credit_cards};
+    return wantarray ? @$arr : $arr;
 }
 
 1;

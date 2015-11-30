@@ -5,6 +5,7 @@ use utf8;
 use Carp qw/croak/;
 use Moo;
 use namespace::clean;
+use Net::Flotum::Object::CreditCard;
 
 has 'flotum' => ( is => 'ro',  weak_ref => 1, );
 has 'id'     => ( is => 'rwp', required => 1 );
@@ -58,7 +59,11 @@ sub add_credit_card {
 
     return {
         method => 'POST',
-        href   => ( join '/', $self->flotum->requester->flotum_api, 'customers', $self->id, 'credit-cards', '?api_key=' . $session ),
+        href   => (
+            join '/',       $self->flotum->requester->flotum_api,
+            'customers',    $self->id,
+            'credit-cards', '?api_key=' . $session
+        ),
         valid_until => time + 900,
         fields      => {
             (
@@ -73,10 +78,10 @@ sub add_credit_card {
                   address_state/
             ),
             ( map { $_ => '*Str' } qw/name_on_card legal_document/ ),
-            number   => '*CreditCard',
-            csc      => '*CSC',
-            brand    => '*Brand',
-            validity => '*YYYYDD',
+            number             => '*CreditCard',
+            csc                => '*CSC',
+            brand              => '*Brand',
+            validity           => '*YYYYDD',
             address_inputed_at => '?GmtDateTime',
         },
         accept => 'application/json'
@@ -84,6 +89,16 @@ sub add_credit_card {
 }
 
 sub list_credit_cards {
+    my ($self) = @_;
+
+    my @credit_cards = $self->flotum->_get_list_customer_credit_cards( id => $self->id );
+
+    my @objs;
+    foreach my $cc_data (@credit_cards) {
+        push @objs, Net::Flotum::Object::CreditCard->new(%$cc_data);
+    }
+
+    return wantarray ? @objs : \@objs;
 
 }
 

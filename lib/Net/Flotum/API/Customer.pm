@@ -97,4 +97,29 @@ sub exec_get_customer_session {
     return $ret{obj};
 }
 
+## i'm not into creathing a API::CreditCard just for this right now.
+sub exec_list_credit_cards {
+    my ( $self, %opts ) = @_;
+
+    my $requester = $self->flotum->requester;
+    my $logger    = $self->flotum->logger;
+
+    my (%ret) = request_with_retries(
+        logger    => $logger,
+        requester => $requester,
+        name      => 'list user credit cards',
+        method    => 'rest_get',
+        params    => [
+            ['customers', $opts{id}, 'credit-cards'],
+            headers => [
+                'Content-Type' => 'application/json',
+                'X-api-key'    => $self->flotum->merchant_api_key
+            ],
+            code                => 200
+        ]
+    );
+
+    return $ret{obj};
+}
+
 1;
