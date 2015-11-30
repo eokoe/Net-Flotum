@@ -2,4 +2,8 @@ Revision history for Net-Flotum
 
 {{$NEXT}}
 
-    - Init version
+    - Init version, you can:
+        - create customer
+        - load a customer by id or by remote_id
+        - ask for a session for adding a credit card
+        - list all credit cards.
