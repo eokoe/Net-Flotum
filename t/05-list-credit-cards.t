@@ -12,7 +12,7 @@ my $cus = $flotum->new_customer(
     legal_document => 11
 );
 my $info = $cus->add_credit_card;
-my $furl = Furl->new( timeout => 5, );
+my $furl = Furl->new( timeout => 15, );
 
 my $res = $furl->post(
     $info->{href},
