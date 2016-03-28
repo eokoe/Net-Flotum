@@ -1,6 +1,8 @@
 Revision history for Net-Flotum
 
 {{$NEXT}}
+
+0.02  2016-03-28 11:38:43 BRT
     - Now we have a proper website! https://api.flotum.com
     - Increased timeout to 15 seconds on t/05-list-credit-cards.t
 

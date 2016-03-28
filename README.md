@@ -74,7 +74,7 @@ It allow you to change between operators (Stripe, Paypal, etc) while keeping you
 
 # AUTHOR
 
-Renato CRON <rentocron@cpan.org>
+Renato CRON &lt;rentocron@cpan.org>
 
 # COPYRIGHT
 
