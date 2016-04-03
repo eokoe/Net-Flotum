@@ -1,6 +1,8 @@
 Revision history for Net-Flotum
 
 {{$NEXT}}
+
+0.03  2016-04-03 02:08:03 BRT
     - use different remote_id in t/ as cpan-testers run in parallel!
     - treat undef $res on Net::Flotum::API::ExceptionHandler (new I die with $@ without trying to read ->code)
 
