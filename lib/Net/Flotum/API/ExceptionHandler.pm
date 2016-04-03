@@ -30,6 +30,7 @@ sub request_with_retries {
         };
         last unless $@;
 
+        die "Response not defined: $@" unless defined $res;
         if ( $res->code == 404  && $res->content !~ /Endpoint not found/) {
             die "Resource does not exists\n";
         }
