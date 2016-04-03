@@ -1,6 +1,8 @@
 Revision history for Net-Flotum
 
 {{$NEXT}}
+    - use different remote_id in t/ as cpan-testers run in parallel!
+    - treat undef $res on Net::Flotum::API::ExceptionHandler (new I die with $@ without trying to read ->code)
 
 0.02  2016-03-28 11:38:43 BRT
     - Now we have a proper website! https://api.flotum.com
