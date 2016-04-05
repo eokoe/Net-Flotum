@@ -4,15 +4,16 @@ use Test::More;
 use_ok('Net::Flotum');
 ok( my $flotum = Net::Flotum->new( merchant_api_key => 'm-just-testing' ), 'new ok' );
 
+my $rand = rand;
 my $cus2 = $flotum->new_customer(
     name           => 'cron',
-    remote_id      => '111',
-    legal_document => 11
+    remote_id      => $rand,
+    legal_document => rand
 );
 
 is( $cus2->loaded, '0', 'object is not loaded' );
 
-my $cus = $flotum->load_customer( remote_id => '111' );
+my $cus = $flotum->load_customer( remote_id => $rand );
 
 is( $cus->loaded, '1',    'object is already loaded' );
 is( $cus->name,   'cron', 'name is cron' );

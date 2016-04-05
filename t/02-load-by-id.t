@@ -6,8 +6,8 @@ ok( my $flotum = Net::Flotum->new( merchant_api_key => 'm-just-testing' ), 'new 
 
 my $cus2 = $flotum->new_customer(
     name           => 'cron',
-    remote_id      => '111',
-    legal_document => 11
+    remote_id      => rand,
+    legal_document => rand
 );
 
 is( $cus2->loaded, '0', 'object is not loaded' );
