@@ -1,6 +1,8 @@
 Revision history for Net-Flotum
 
 {{$NEXT}}
+
+0.05  2016-05-16 20:25:33 BRT
     - added method remove on Net::Flotum::Object::CreditCard
 
 0.04  2016-04-05 15:27:22 BRT
