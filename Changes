@@ -1,6 +1,7 @@
 Revision history for Net-Flotum
 
 {{$NEXT}}
+    - added method remove on Net::Flotum::Object::CreditCard
 
 0.04  2016-04-05 15:27:22 BRT
     - require IO::Socket::SSL
