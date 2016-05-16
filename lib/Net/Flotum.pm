@@ -100,6 +100,20 @@ sub _get_list_customer_credit_cards {
     return wantarray ? @$arr : $arr;
 }
 
+sub _remove_customer_credit_cards {
+    my ( $self, %opts ) = @_;
+
+    confess 'missing parameter: `id` is required'
+      unless ( exists $opts{id} && defined $opts{id} );
+  confess 'missing parameter: `merchant_customer_id` is required'
+      unless ( exists $opts{merchant_customer_id} && defined $opts{merchant_customer_id} );
+
+    my $bool = $self->customer_api->exec_remove_credit_card(%opts);
+    return $bool;
+}
+
+
+
 1;
 
 __END__

@@ -122,4 +122,30 @@ sub exec_list_credit_cards {
     return $ret{obj};
 }
 
+
+## i'm not into creathing a API::CreditCard just for this right now. (2)
+sub exec_remove_credit_card {
+    my ( $self, %opts ) = @_;
+
+    my $requester = $self->flotum->requester;
+    my $logger    = $self->flotum->logger;
+
+    my (%ret) = request_with_retries(
+        logger    => $logger,
+        requester => $requester,
+        name      => 'remove credit one card',
+        method    => 'rest_delete',
+        params    => [
+            ['customers', $opts{merchant_customer_id}, 'credit-cards', $opts{id}],
+            headers => [
+                'Content-Type' => 'application/json',
+                'X-api-key'    => $self->flotum->merchant_api_key
+            ],
+            code                => 204
+        ]
+    );
+
+    return $ret{obj};
+}
+
 1;

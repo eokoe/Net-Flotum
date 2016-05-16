@@ -12,96 +12,101 @@ has 'id'     => ( is => 'rwp', required => 1 );
 has 'loaded' => ( is => 'rwp', default  => 0 );
 
 for (
-    qw/
-    name remote_id legal_document
-    default_address_name default_address_zip default_address_street default_address_number
-    default_address_observation default_address_neighbourhood default_address_city default_address_state
-    default_address_inputed_at
-    /
+  qw/
+  name remote_id legal_document
+  default_address_name default_address_zip default_address_street default_address_number
+  default_address_observation default_address_neighbourhood default_address_city default_address_state
+  default_address_inputed_at
+  /
   ) {
-    has $_ => ( is => 'rwp' );
-    before $_ => sub {
-        my ($self) = @_;
-        return if $self->loaded;
+  has $_ => ( is => 'rwp' );
+  before $_ => sub {
+    my ($self) = @_;
+    return if $self->loaded;
 
-        $self->_load_from_id;
-      }
+    $self->_load_from_id;
+    }
 }
 
 sub _load_from_id {
-    my ($self) = @_;
-    my $mydata = $self->flotum->_get_customer_data( id => $self->id );
-    for my $field ( keys %$mydata ) {
-        if ( $self->can($field) ) {
-            my $method = "_set_$field";
-            $self->$method( $mydata->{$field} );
-        }
+  my ($self) = @_;
+  my $mydata = $self->flotum->_get_customer_data( id => $self->id );
+  for my $field ( keys %$mydata ) {
+    if ( $self->can($field) ) {
+      my $method = "_set_$field";
+      $self->$method( $mydata->{$field} );
     }
-    $self->_set_loaded(1);
+  }
+  $self->_set_loaded(1);
 }
 
 sub _load_from_remote_id {
-    my ( $self, $remote_id ) = @_;
-    my $mydata = $self->flotum->_get_customer_data( remote_id => $remote_id );
-    for my $field ( keys %$mydata ) {
-        if ( $self->can($field) ) {
-            my $method = "_set_$field";
-            $self->$method( $mydata->{$field} );
-        }
+  my ( $self, $remote_id ) = @_;
+  my $mydata = $self->flotum->_get_customer_data( remote_id => $remote_id );
+  for my $field ( keys %$mydata ) {
+    if ( $self->can($field) ) {
+      my $method = "_set_$field";
+      $self->$method( $mydata->{$field} );
     }
-    $self->_set_loaded(1);
+  }
+  $self->_set_loaded(1);
 }
 
 sub add_credit_card {
-    my ($self) = @_;
+  my ($self) = @_;
 
-    my $session = $self->flotum->_get_customer_session_key( id => $self->id );
+  my $session = $self->flotum->_get_customer_session_key( id => $self->id );
 
-    return {
-        method => 'POST',
-        href   => (
-            join '/',       $self->flotum->requester->flotum_api,
-            'customers',    $self->id,
-            'credit-cards', '?api_key=' . $session
-        ),
-        valid_until => time + 900,
-        fields      => {
-            (
-                map { $_ => '?Str' }
-                  qw/address_name
-                  address_zip
-                  address_street
-                  address_number
-                  address_observation
-                  address_neighbourhood
-                  address_city
-                  address_state/
-            ),
-            ( map { $_ => '*Str' } qw/name_on_card legal_document/ ),
-            number             => '*CreditCard',
-            csc                => '*CSC',
-            brand              => '*Brand',
-            validity           => '*YYYYDD',
-            address_inputed_at => '?GmtDateTime',
-        },
-        accept => 'application/json'
-    };
+  return {
+    method => 'POST',
+    href   => (
+      join '/',       $self->flotum->requester->flotum_api,
+      'customers',    $self->id,
+      'credit-cards', '?api_key=' . $session
+    ),
+    valid_until => time + 900,
+    fields      => {
+      (
+        map { $_ => '?Str' }
+          qw/address_name
+          address_zip
+          address_street
+          address_number
+          address_observation
+          address_neighbourhood
+          address_city
+          address_state/
+      ),
+      ( map { $_ => '*Str' } qw/name_on_card legal_document/ ),
+      number             => '*CreditCard',
+      csc                => '*CSC',
+      brand              => '*Brand',
+      validity           => '*YYYYDD',
+      address_inputed_at => '?GmtDateTime',
+    },
+    accept => 'application/json'
+  };
 }
 
 sub list_credit_cards {
-    my ($self) = @_;
+  my ($self) = @_;
 
-    my @credit_cards = $self->flotum->_get_list_customer_credit_cards( id => $self->id );
+  my @credit_cards =
+    $self->flotum->_get_list_customer_credit_cards( id => $self->id );
 
-    my @objs;
-    foreach my $cc_data (@credit_cards) {
-        push @objs, Net::Flotum::Object::CreditCard->new(%$cc_data);
-    }
+  my @objs;
+  foreach my $cc_data (@credit_cards) {
+    push @objs,
+      Net::Flotum::Object::CreditCard->new(
+      flotum               => $self->flotum,
+      merchant_customer_id => $self->id,
+      %$cc_data,
+      );
+  }
 
-    return wantarray ? @objs : \@objs;
+  return wantarray ? @objs : \@objs;
 
 }
-
 1;
 
 __END__

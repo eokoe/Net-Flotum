@@ -36,4 +36,7 @@ is($card->mask, '5268*********853', 'mask ok');
 is($card->conjecture_brand, 'mastercard', 'brand is ok');
 is($card->validity, '201801', 'validity is ok');
 
+is($cards[0]->remove, '1', 'removed');
+
+
 done_testing;
