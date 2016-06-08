@@ -70,6 +70,12 @@ sub new_customer {
     );
 }
 
+sub _new_charge {
+    my $self = shift;
+
+    return $self->customer_api->exec_new_charge(@_);
+}
+
 sub _get_customer_data {
     my ( $self, %opts ) = @_;
 

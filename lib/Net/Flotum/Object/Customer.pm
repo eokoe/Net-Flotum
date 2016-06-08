@@ -107,6 +107,13 @@ sub list_credit_cards {
   return wantarray ? @objs : \@objs;
 
 }
+
+sub new_charge {
+    my $self = shift;
+
+    return $self->flotum->_new_charge(@_, customer => $self);
+}
+
 1;
 
 __END__

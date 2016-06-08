@@ -1,14 +1,12 @@
 package Net::Flotum::API::Customer;
-use strict;
-use warnings;
-use utf8;
-use Carp qw/croak confess/;
+use common::sense;
 use Moo;
-use namespace::clean;
+use Carp;
 use JSON::MaybeXS;
+use Net::Flotum::Object::Charge;
 use Net::Flotum::API::ExceptionHandler;
 
-has 'flotum' => ( is => 'ro', weak_ref => 1, );
+has 'flotum' => ( is => 'ro', weak_ref => 1);
 
 sub exec_new_customer {
     my ( $self, %opts ) = @_;
@@ -146,6 +144,40 @@ sub exec_remove_credit_card {
     );
 
     return $ret{obj};
+}
+
+sub exec_new_charge {
+    my ($self, %args) = @_;
+
+    my $customer = delete $args{customer};
+    croak "missing 'customer'" unless defined $customer;
+
+    my $customer_id = $customer->id;
+
+    my %ret = request_with_retries(
+        logger    => $self->flotum->logger,
+        requester => $self->flotum->requester,
+        name      => 'new charge',
+        method    => 'rest_post',
+        params    => [
+            join("/", 'customers', $customer_id, 'charges'),
+            headers => [
+                'Content-Type' => 'application/json',
+                'X-api-key'    => $self->flotum->merchant_api_key,
+            ],
+            code => 201,
+            data => encode_json({
+                %args,
+                merchant_payment_account_id => 1,
+            })
+        ]
+    );
+
+    return Net::Flotum::Object::Charge->new(
+        flotum => $self->flotum,
+        id     => $ret{obj}->{id},
+        charge => $self,
+    );
 }
 
 1;
