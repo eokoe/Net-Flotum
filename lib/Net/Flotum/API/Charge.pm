@@ -104,8 +104,39 @@ sub exec_capture_charge {
         ]
     );
 
-    use DDP; p \%ret;
+    if (%ret) {
+        return $ret{obj};
+    }
+    return ;
+}
 
+sub exec_refund_charge {
+    my ($self, %args) = @_;
+
+    my $charge = delete $args{charge};
+
+    my $customer_id = $charge->customer->id;
+    my $charge_id   = $charge->id;
+
+    my %ret = request_with_retries(
+        logger    => $self->flotum->logger,
+        requester => $self->flotum->requester,
+        name      => 'refund charge',
+        method    => 'rest_post',
+        params    => [
+            join("/", 'customers', $customer_id, 'charges', $charge_id, 'refund'),
+            headers => [
+                'Content-Type' => 'application/json',
+                'X-api-key'    => $self->flotum->merchant_api_key,
+            ],
+            code => 202,
+            data => '{}'
+        ]
+    );
+
+    if (%ret) {
+        return $ret{obj};
+    }
     return ;
 }
 

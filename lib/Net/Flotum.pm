@@ -96,6 +96,12 @@ sub _capture_charge {
     return $self->charge_api->exec_capture_charge(@_);
 }
 
+sub _refund_charge {
+    my $self = shift;
+
+    return $self->charge_api->exec_refund_charge(@_);
+}
+
 sub _get_customer_data {
     my ( $self, %opts ) = @_;
 

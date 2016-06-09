@@ -78,7 +78,18 @@ diag "capturing";
 
 can_ok $charge, 'capture';
 
-ok ($charge->capture( description => "is optional" ), 'capture charge');
+ok (my $capture = $charge->capture(description => "is optional"), 'capture charge');
+
+is ($capture->{transaction_status}, 'authorized', 'transaction_status');
+
+diag "refunding";
+
+can_ok $charge, "refund";
+
+ok (my $refund = $charge->refund(), 'refund charge');
+
+is ($refund->{status}, 'aborted', 'status aborted');
+is ($refund->{transaction_status}, 'in-cancellation', 'transaction_status in-cancellation');
 
 done_testing();
 

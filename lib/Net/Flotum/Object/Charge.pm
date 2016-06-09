@@ -34,6 +34,12 @@ sub capture {
     return $self->flotum->_capture_charge(@_, charge => $self);
 }
 
+sub refund {
+    my $self = shift;
+
+    return $self->flotum->_refund_charge(@_, charge => $self);
+}
+
 1;
 
 __END__
