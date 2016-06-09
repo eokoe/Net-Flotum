@@ -22,6 +22,12 @@ has customer => (
     weak_ref => 1,
 );
 
+sub payment {
+    my $self = shift;
+
+    return $self->flotum->_payment_charge(@_, charge => $self);
+}
+
 sub capture {
     my $self = shift;
 

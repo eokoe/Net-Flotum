@@ -84,6 +84,12 @@ sub _new_charge {
     return $self->customer_api->exec_new_charge(@_);
 }
 
+sub _payment_charge {
+    my $self = shift;
+
+    return $self->charge_api->exec_payment_charge(@_);
+}
+
 sub _capture_charge {
     my $self = shift;
 
