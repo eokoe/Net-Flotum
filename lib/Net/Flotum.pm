@@ -219,6 +219,31 @@ Net-Flotum - use Flotum as your payment gateway
     # returns a list of Net::Flotum::Object::CreditCard
     @credit_cards = $customer->list_credit_cards();
 
+    # Creating a charge.
+    my $charge = $customer->new_charge(
+        amount   => 100,
+        currency => 'bra',
+        metadata => {
+            'Please use' => 'The way you need',
+            'but'        => 'Do not use more than 10000 bytes after encoded in JSON',
+        }
+    );
+
+    # Doing payment.
+    my $payment = $charge->payment(
+        customer_credit_card_id => $customer_credit_card_id,
+        csc_check               => '000',
+    );
+
+    # Capture.
+    my $capture = $charge->capture(description => "is optional");
+    print $capture->{transaction_status} . "\n"; # authorized
+
+    # Refund.
+    my $refund = $charge->refund();
+    print $refund->{status} . "\n";             # aborted
+    print $refund->{transaction_status} . "\n"; # in-cancellation
+
 
 =head1 DESCRIPTION
 
