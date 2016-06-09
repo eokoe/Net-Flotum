@@ -3,8 +3,6 @@ use Test::More;
 use JSON::MaybeXS;
 use Furl;
 
-use DDP;
-
 use_ok('Net::Flotum');
 ok( my $flotum = Net::Flotum->new( merchant_api_key => 'm-just-testing' ), 'new ok' );
 
