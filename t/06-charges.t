@@ -71,6 +71,9 @@ ok(
 
 is ($payment->{transaction_status}, 'queue', 'transaction_status');
 
+diag "waiting 5 seconds";
+sleep 5;
+
 diag "capturing";
 
 can_ok $charge, 'capture';
