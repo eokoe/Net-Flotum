@@ -1,27 +1,38 @@
 package Net::Flotum::Object::Charge;
 use common::sense;
 use Moo;
+use MooX::late;
 use Carp;
 
 has flotum => (
     is       => "ro",
     weak_ref => 1,
+    required => 1,
 );
 
 has id => (
-    is => "rw",
+    is       => "rw",
+    isa      => "Str",
+    required => 1,
 );
 
-has charge => (
+has customer => (
     is       => "rw",
+    isa      => "Net::Flotum::Object::Customer",
     weak_ref => 1,
 );
+
+sub capture {
+    my $self = shift;
+
+    return $self->flotum->_capture_charge(@_, charge => $self);
+}
 
 1;
 
 __END__
 
-=encoding utf-8
+=encoding UTF-8
 
 =head1 NAME
 

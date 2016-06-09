@@ -174,9 +174,9 @@ sub exec_new_charge {
     );
 
     return Net::Flotum::Object::Charge->new(
-        flotum => $self->flotum,
-        id     => $ret{obj}->{id},
-        charge => $self,
+        flotum   => $self->flotum,
+        id       => $ret{obj}->{id},
+        customer => $customer,
     );
 }
 

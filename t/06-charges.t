@@ -31,5 +31,11 @@ isa_ok $charge, 'Net::Flotum::Object::Charge';
 
 ok($charge->id, 'charge id');
 
+diag "capturing";
+
+can_ok $charge, 'capture';
+
+ok ($charge->capture( description => "is optional" ), 'capture charge');
+
 done_testing();
 

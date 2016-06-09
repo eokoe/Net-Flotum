@@ -9,6 +9,7 @@ use Carp qw/croak confess/;
 use Moo;
 use namespace::clean;
 
+use Net::Flotum::API::Charge;
 use Net::Flotum::API::Customer;
 use Net::Flotum::API::RequestHandler;
 
@@ -19,6 +20,7 @@ has 'requester' => ( is => 'ro', builder => '_build_requester', lazy => 1 );
 has 'merchant_api_key' => ( is => 'rw', required => 1 );
 
 has 'customer_api' => ( is => 'ro', builder => '_build_customer_api', lazy => 1 );
+has 'charge_api'   => ( is => 'ro', builder => '_build_charge_api',   lazy => 1 );
 
 sub _build_requester {
     Net::Flotum::API::RequestHandler->new;
@@ -32,6 +34,12 @@ sub _build_logger {
 sub _build_customer_api {
     my ($self) = @_;
     Net::Flotum::API::Customer->new( flotum => $self, );
+}
+
+sub _build_charge_api {
+    my ($self) = @_;
+
+    Net::Flotum::API::Charge->new(flotum => $self);
 }
 
 sub load_customer {
@@ -74,6 +82,12 @@ sub _new_charge {
     my $self = shift;
 
     return $self->customer_api->exec_new_charge(@_);
+}
+
+sub _capture_charge {
+    my $self = shift;
+
+    return $self->charge_api->exec_capture_charge(@_);
 }
 
 sub _get_customer_data {
