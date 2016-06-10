@@ -45,6 +45,7 @@
             "JSON::MaybeXS" : "0",
             "Log::Log4perl" : "0",
             "Moo" : "0",
+            "MooX::late" : "0",
             "Stash::REST" : "0.08",
             "URI" : "0",
             "namespace::clean" : "0",
@@ -73,7 +74,7 @@
          "web" : "https://github.com/eokoe/Net-Flotum"
       }
    },
-   "version" : "0.06",
+   "version" : "0.062",
    "x_contributors" : [
       "Junior Moraes <juniorfvox@gmail.com>",
       "Renato CRON <renato.cron@gmail.com>"

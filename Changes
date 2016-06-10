@@ -2,6 +2,9 @@ Revision history for Net-Flotum
 
 {{$NEXT}}
 
+0.062  2016-06-10 11:19:28 BRT
+    - missing dependencies
+
 0.06  2016-06-09 18:17:06 BRT
 
     - added support to charges
