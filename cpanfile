@@ -2,6 +2,7 @@ requires 'perl', '5.008005';
 
 requires 'IO::Socket::SSL';
 requires 'Moo';
+requires 'MooX::late';
 requires 'URI';
 requires 'HTTP::Request::Common';
 requires 'Carp';
