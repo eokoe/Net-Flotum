@@ -12,6 +12,7 @@ requires 'JSON::MaybeXS';
 requires 'Stash::REST', '0.08';
 requires 'Furl';
 requires 'Log::Log4perl';
+requires 'common::sense';
 
 on test => sub {
     requires 'Test::More', '0.96';
