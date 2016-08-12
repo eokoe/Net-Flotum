@@ -1,6 +1,8 @@
 Revision history for Net-Flotum
 
 {{$NEXT}}
+
+0.068  2016-08-12 19:26:43 BRT
     - added callback support on $customer->add_credit_card( callback => URI )
 
 0.064  2016-06-13 10:34:18 BRT

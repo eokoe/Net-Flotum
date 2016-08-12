@@ -48,6 +48,7 @@
             "MooX::late" : "0",
             "Stash::REST" : "0.08",
             "URI" : "0",
+            "URI::Escape" : "0",
             "common::sense" : "0",
             "namespace::clean" : "0",
             "perl" : "5.008005"
@@ -75,7 +76,7 @@
          "web" : "https://github.com/eokoe/Net-Flotum"
       }
    },
-   "version" : "0.064",
+   "version" : "0.068",
    "x_contributors" : [
       "Junior Moraes <juniorfvox@gmail.com>",
       "Renato CRON <renato.cron@gmail.com>"
