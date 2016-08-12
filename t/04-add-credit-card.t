@@ -10,11 +10,12 @@ my $cus = $flotum->new_customer(
     legal_document => rand
 );
 
-my $info = $cus->add_credit_card;
+my $info = $cus->add_credit_card( callback => 'http://localhostx:2202/too' );
 is( $info->{fields}{number}, '*CreditCard', 'Credit card number is required' );
 
-ok( $info->{href},        'request has an href' );
+ok( $info->{href}, 'request has an href' );
 like( $info->{href}, qr|/credit-cards|, 'request href like *credit-cards*' );
+like( $info->{href}, qr|localhostx|, 'request href has callback' );
 
 ok( $info->{valid_until}, 'request has a time to expire.' );
 
