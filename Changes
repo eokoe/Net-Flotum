@@ -1,6 +1,8 @@
 Revision history for Net-Flotum
 
 {{$NEXT}}
+
+0.08  2016-08-15 18:10:50 BRT
     - Removed hardcoded merchant_payment_account_id
 
 0.068  2016-08-12 19:26:43 BRT
