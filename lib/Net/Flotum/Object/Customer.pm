@@ -64,8 +64,7 @@ sub add_credit_card {
         method => 'POST',
         href   => (
             join '/', $self->flotum->requester->flotum_api,
-            'customers', $self->id,
-            'credit-cards',
+            'customers', $self->id, 'credit-cards',
             '?api_key=' . uri_escape($session) . ( $callback ? '&callback=' . uri_escape($callback) : '' )
         ),
         valid_until => time + 900,

@@ -17,43 +17,47 @@ isa_ok $customer, 'Net::Flotum::Object::Customer';
 
 diag "adding a credit card";
 
-ok(my $cc = $customer->add_credit_card(), 'add credit card');
+ok( my $cc = $customer->add_credit_card(), 'add credit card' );
 
-my $furl = Furl->new(timeout => 10);
+my $furl = Furl->new( timeout => 25 );
 
 my $req = $furl->post(
     $cc->{href},
     [],
-    encode_json({
-        name_on_card => 'Renato S de Souza',
-        number       => '5235058636621892',
-        validity     => '201811',
-        csc          => '212',
-    }),
+    encode_json(
+        {
+            name_on_card => 'Renato S de Souza',
+            number       => '5235058636621892',
+            validity     => '201811',
+            csc          => '212',
+        }
+    ),
 );
 
-ok($req->is_success, 'request ok');
+ok( $req->is_success, 'request ok' );
 
 my $credit_card = decode_json $req->content;
 
-ok ($credit_card->{id}, 'credit card id');
+ok( $credit_card->{id}, 'credit card id' );
 
 diag "creating charge";
 
 can_ok $customer, 'new_charge';
 
 my $charge = $customer->new_charge(
-    amount   => 200,
-    currency => 'bra',
-    metadata => {
+    amount                      => 200,
+    currency                    => 'bra',
+    merchant_payment_account_id => 1,
+    metadata                    => {
         'Please use' => 'The way you need',
         'but'        => 'Do not use more than 10000 bytes after encoded in JSON',
     }
 );
-
+use DDP;
+p $charge;
 isa_ok $charge, 'Net::Flotum::Object::Charge';
 
-ok($charge->id, 'charge id');
+ok( $charge->id, 'charge id' );
 
 diag "payment";
 
@@ -67,27 +71,33 @@ ok(
     'payment',
 );
 
-is ($payment->{transaction_status}, 'queue', 'transaction_status');
-
-diag "waiting 5 seconds";
-sleep 5;
+is( $payment->{transaction_status}, 'queue', 'transaction_status' );
 
 diag "capturing";
 
 can_ok $charge, 'capture';
+my $capture;
+for (1..100){
+    diag "waiting 1 seconds";
+    sleep 1;
 
-ok (my $capture = $charge->capture(description => "is optional"), 'capture charge');
+    $capture = eval{$charge->capture( description => "is optional" )};
+    next if $@;
 
-is ($capture->{transaction_status}, 'authorized', 'transaction_status');
+    ok($capture, 'capture charge' );
+    last;
+}
+
+is( $capture->{transaction_status}, 'authorized', 'transaction_status' );
 
 diag "refunding";
 
 can_ok $charge, "refund";
 
-ok (my $refund = $charge->refund(), 'refund charge');
+ok( my $refund = $charge->refund(), 'refund charge' );
 
-is ($refund->{status}, 'aborted', 'status aborted');
-is ($refund->{transaction_status}, 'in-cancellation', 'transaction_status in-cancellation');
+is( $refund->{status},             'aborted',         'status aborted' );
+is( $refund->{transaction_status}, 'in-cancellation', 'transaction_status in-cancellation' );
 
 done_testing();
 

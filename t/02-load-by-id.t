@@ -4,6 +4,7 @@ use Test::More;
 use_ok('Net::Flotum');
 ok( my $flotum = Net::Flotum->new( merchant_api_key => 'm-just-testing' ), 'new ok' );
 
+my $rand = rand.rand.rand;
 my $cus2 = $flotum->new_customer(
     name           => 'cron',
     remote_id      => rand,

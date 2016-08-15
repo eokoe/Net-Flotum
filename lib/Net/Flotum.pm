@@ -39,7 +39,7 @@ sub _build_customer_api {
 sub _build_charge_api {
     my ($self) = @_;
 
-    Net::Flotum::API::Charge->new(flotum => $self);
+    Net::Flotum::API::Charge->new( flotum => $self );
 }
 
 sub load_customer {
@@ -81,7 +81,7 @@ sub new_customer {
 sub _new_charge {
     my $self = shift;
 
-    return $self->customer_api->exec_new_charge(@_);
+    return $self->charge_api->exec_new_charge(@_);
 }
 
 sub _payment_charge {
@@ -137,14 +137,12 @@ sub _remove_customer_credit_cards {
 
     confess 'missing parameter: `id` is required'
       unless ( exists $opts{id} && defined $opts{id} );
-  confess 'missing parameter: `merchant_customer_id` is required'
+    confess 'missing parameter: `merchant_customer_id` is required'
       unless ( exists $opts{merchant_customer_id} && defined $opts{merchant_customer_id} );
 
     my $bool = $self->customer_api->exec_remove_credit_card(%opts);
     return $bool;
 }
-
-
 
 1;
 

@@ -9,33 +9,33 @@ use namespace::clean;
 has 'flotum' => ( is => 'ro', weak_ref => 1, );
 
 has [
-  qw/
-    verified_by_any_merchant
-    created_at
+    qw/
+      verified_by_any_merchant
+      created_at
 
-    mask
-    validity
-    conjecture_brand
+      mask
+      validity
+      conjecture_brand
 
-    /
+      /
 ] => ( is => 'ro' );
 
 has [
-  qw/
-    id
-    merchant_customer_id
-    /
+    qw/
+      id
+      merchant_customer_id
+      /
 ] => ( is => 'ro', required => 1 );
 
 sub remove {
-  my ($self) = @_;
+    my ($self) = @_;
 
-  my $cc = $self->flotum->_remove_customer_credit_cards(
-    id                   => $self->id,
-    merchant_customer_id => $self->merchant_customer_id
-  );
+    my $cc = $self->flotum->_remove_customer_credit_cards(
+        id                   => $self->id,
+        merchant_customer_id => $self->merchant_customer_id
+    );
 
-  return $cc eq '' ? 1 : 0;
+    return $cc eq '' ? 1 : 0;
 
 }
 

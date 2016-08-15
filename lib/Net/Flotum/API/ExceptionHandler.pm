@@ -31,18 +31,19 @@ sub request_with_retries {
         last unless $@;
 
         die "Response not defined: $@" unless defined $res;
-        if ( $res->code == 404  && $res->content !~ /Endpoint not found/) {
+        if ( $res->code == 404 && $res->content !~ /Endpoint not found/ ) {
             die "Resource does not exists\n";
         }
         if ( $res->code == 400 && ref $obj eq 'HASH' && ref $obj->{error} eq 'form_error' ) {
             my $msg = "Invalid data:\n";
-            $msg .= "$_ = " . $obj->{form_error}{$_} . "\n" for keys %{$obj->{form_error}};
+            $msg .= "$_ = " . $obj->{form_error}{$_} . "\n" for keys %{ $obj->{form_error} };
             $logger->error( &log_error_txt( $@, $req, $res ) );
-            $logger->error( $msg );
+            $logger->error($msg);
             die "$msg\n";
         }
 
         $logger->error( &log_error_txt( $@, $req, $res ) );
+
         # erros nao 500 desiste na hora.
         if ( $tries == 0 || $res->code != 500 ) {
             $logger->error( "Giving up $name. Reponse code " . $res->code );
@@ -52,7 +53,7 @@ sub request_with_retries {
         sleep $sleep;
     }
 
-    return (obj => $obj, res => $res);
+    return ( obj => $obj, res => $res );
 }
 
 sub log_error_txt {

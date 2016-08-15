@@ -12,7 +12,7 @@ has flotum => (
 );
 
 sub exec_new_charge {
-    my ($self, %args) = @_;
+    my ( $self, %args ) = @_;
 
     my $customer = delete $args{customer};
     croak "missing 'customer'" unless defined $customer;
@@ -25,27 +25,30 @@ sub exec_new_charge {
         name      => 'new charge',
         method    => 'rest_post',
         params    => [
-            join("/", 'customers', $customer_id, 'charges'),
+            join( "/", 'customers', $customer_id, 'charges' ),
             headers => [
                 'Content-Type' => 'application/json',
                 'X-api-key'    => $self->flotum->merchant_api_key,
             ],
             code => 201,
-            data => encode_json({
-                %args
-            })
+            data => encode_json( {%args} )
         ]
     );
 
-    return Net::Flotum::Object::Charge->new(
-        flotum   => $self->flotum,
-        id       => $ret{obj}->{id},
-        customer => $customer,
-    );
+    if (%ret) {
+
+        return Net::Flotum::Object::Charge->new(
+            flotum   => $self->flotum,
+            customer => $customer,
+            id       => $ret{obj}{id}
+        );
+
+    }
+    return;
 }
 
 sub exec_payment_charge {
-    my ($self, %args) = @_;
+    my ( $self, %args ) = @_;
 
     # Required args.
     for (qw(charge)) {
@@ -63,24 +66,24 @@ sub exec_payment_charge {
         name      => 'payment charge',
         method    => 'rest_post',
         params    => [
-            join("/", 'customers', $customer_id, 'charges', $charge_id, 'payment'),
+            join( "/", 'customers', $customer_id, 'charges', $charge_id, 'payment' ),
             headers => [
                 'Content-Type' => 'application/json',
                 'X-api-key'    => $self->flotum->merchant_api_key,
             ],
             code => 202,
-            data => encode_json(\%args)
+            data => encode_json( \%args )
         ]
     );
 
     if (%ret) {
         return $ret{obj};
     }
-    return ;
+    return;
 }
 
 sub exec_capture_charge {
-    my ($self, %args) = @_;
+    my ( $self, %args ) = @_;
 
     my $charge = delete $args{charge};
 
@@ -93,24 +96,24 @@ sub exec_capture_charge {
         name      => 'capture charge',
         method    => 'rest_post',
         params    => [
-            join("/", 'customers', $customer_id, 'charges', $charge_id, 'capture'),
+            join( "/", 'customers', $customer_id, 'charges', $charge_id, 'capture' ),
             headers => [
                 'Content-Type' => 'application/json',
                 'X-api-key'    => $self->flotum->merchant_api_key,
             ],
             code => 202,
-            data => encode_json(\%args)
+            data => encode_json( \%args )
         ]
     );
 
     if (%ret) {
         return $ret{obj};
     }
-    return ;
+    return;
 }
 
 sub exec_refund_charge {
-    my ($self, %args) = @_;
+    my ( $self, %args ) = @_;
 
     my $charge = delete $args{charge};
 
@@ -123,7 +126,7 @@ sub exec_refund_charge {
         name      => 'refund charge',
         method    => 'rest_post',
         params    => [
-            join("/", 'customers', $customer_id, 'charges', $charge_id, 'refund'),
+            join( "/", 'customers', $customer_id, 'charges', $charge_id, 'refund' ),
             headers => [
                 'Content-Type' => 'application/json',
                 'X-api-key'    => $self->flotum->merchant_api_key,
@@ -136,7 +139,7 @@ sub exec_refund_charge {
     if (%ret) {
         return $ret{obj};
     }
-    return ;
+    return;
 }
 
 1;

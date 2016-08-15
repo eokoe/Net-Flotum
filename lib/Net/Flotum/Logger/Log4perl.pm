@@ -12,7 +12,7 @@ Log::Log4perl->easy_init(
     }
 );
 
-has 'logger' =>(is => 'rw', lazy => 1, builder => '_build_logger');
+has 'logger' => ( is => 'rw', lazy => 1, builder => '_build_logger' );
 
 sub _build_logger {
     get_logger;

@@ -6,7 +6,7 @@ use JSON::MaybeXS;
 use Net::Flotum::Object::Charge;
 use Net::Flotum::API::ExceptionHandler;
 
-has 'flotum' => ( is => 'ro', weak_ref => 1);
+has 'flotum' => ( is => 'ro', weak_ref => 1 );
 
 sub exec_new_customer {
     my ( $self, %opts ) = @_;
@@ -42,7 +42,8 @@ sub exec_load_customer {
 
     my ( @with_id, %params );
     push @with_id, $opts{id} if exists $opts{id} and defined $opts{id};
-    $params{remote_id} = $opts{remote_id} if exists $opts{remote_id} and defined $opts{remote_id};
+    $params{remote_id} = $opts{remote_id}
+      if exists $opts{remote_id} and defined $opts{remote_id};
 
     my (%ret) = request_with_retries(
         logger    => $logger,
@@ -108,18 +109,17 @@ sub exec_list_credit_cards {
         name      => 'list user credit cards',
         method    => 'rest_get',
         params    => [
-            ['customers', $opts{id}, 'credit-cards'],
+            [ 'customers', $opts{id}, 'credit-cards' ],
             headers => [
                 'Content-Type' => 'application/json',
                 'X-api-key'    => $self->flotum->merchant_api_key
             ],
-            code                => 200
+            code => 200
         ]
     );
 
     return $ret{obj};
 }
-
 
 ## i'm not into creathing a API::CreditCard just for this right now. (2)
 sub exec_remove_credit_card {
@@ -134,12 +134,12 @@ sub exec_remove_credit_card {
         name      => 'remove credit one card',
         method    => 'rest_delete',
         params    => [
-            ['customers', $opts{merchant_customer_id}, 'credit-cards', $opts{id}],
+            [ 'customers', $opts{merchant_customer_id}, 'credit-cards', $opts{id} ],
             headers => [
                 'Content-Type' => 'application/json',
                 'X-api-key'    => $self->flotum->merchant_api_key
             ],
-            code                => 204
+            code => 204
         ]
     );
 
@@ -147,37 +147,11 @@ sub exec_remove_credit_card {
 }
 
 sub exec_new_charge {
-    my ($self, %args) = @_;
+    my ( $self, %args ) = @_;
 
-    my $customer = delete $args{customer};
-    croak "missing 'customer'" unless defined $customer;
+    my $ret = $self->flotum->_new_charge->exec_new_charge( customer => $self );
 
-    my $customer_id = $customer->id;
-
-    my %ret = request_with_retries(
-        logger    => $self->flotum->logger,
-        requester => $self->flotum->requester,
-        name      => 'new charge',
-        method    => 'rest_post',
-        params    => [
-            join("/", 'customers', $customer_id, 'charges'),
-            headers => [
-                'Content-Type' => 'application/json',
-                'X-api-key'    => $self->flotum->merchant_api_key,
-            ],
-            code => 201,
-            data => encode_json({
-                %args,
-                merchant_payment_account_id => 1,
-            })
-        ]
-    );
-
-    return Net::Flotum::Object::Charge->new(
-        flotum   => $self->flotum,
-        id       => $ret{obj}->{id},
-        customer => $customer,
-    );
+    return $ret;
 }
 
 1;
