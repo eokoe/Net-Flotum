@@ -32,8 +32,7 @@ sub exec_new_charge {
             ],
             code => 201,
             data => encode_json({
-                %args,
-                merchant_payment_account_id => 1,
+                %args
             })
         ]
     );
