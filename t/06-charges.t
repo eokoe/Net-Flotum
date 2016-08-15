@@ -53,8 +53,7 @@ my $charge = $customer->new_charge(
         'but'        => 'Do not use more than 10000 bytes after encoded in JSON',
     }
 );
-use DDP;
-p $charge;
+
 isa_ok $charge, 'Net::Flotum::Object::Charge';
 
 ok( $charge->id, 'charge id' );
