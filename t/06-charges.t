@@ -9,7 +9,6 @@ ok( my $flotum = Net::Flotum->new( merchant_api_key => 'm-just-testing' ), 'new 
 diag "creating customer";
 my $customer = $flotum->new_customer(
     name           => 'cron',
-    remote_id      => rand,
     legal_document => rand
 );
 
