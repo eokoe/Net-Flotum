@@ -10,7 +10,15 @@ my $cus = $flotum->new_customer(
     name           => 'cron',
     legal_document => rand
 );
-my $info = $cus->add_credit_card;
+my $info = $cus->add_credit_card( callback => 'http://localhostx:2202/too' );
+is( $info->{fields}{number}, '*CreditCard', 'Credit card number is required' );
+
+ok( $info->{href}, 'request has an href' );
+like( $info->{href}, qr|/credit-cards|, 'request href like *credit-cards*' );
+like( $info->{href}, qr|localhostx|,    'request href has callback' );
+
+ok( $info->{valid_until}, 'request has a time to expire.' );
+
 my $furl = Furl->new( timeout => 15, );
 
 my $res = $furl->post(
@@ -25,17 +33,16 @@ my $res = $furl->post(
     }
 );
 
-ok($res->is_success, 'credit card created');
+ok( $res->is_success, 'credit card created' );
 
 my @cards = $cus->list_credit_cards;
-is(@cards, 1, 'one card');
+is( @cards, 1, 'one card' );
 my $card = $cards[0];
 
-is($card->mask, '5268*********853', 'mask ok');
-is($card->conjecture_brand, 'mastercard', 'brand is ok');
-is($card->validity, '201801', 'validity is ok');
+is( $card->mask,             '5268*********853', 'mask ok' );
+is( $card->conjecture_brand, 'mastercard',       'brand is ok' );
+is( $card->validity,         '201801',           'validity is ok' );
 
-is($cards[0]->remove, '1', 'removed');
-
+is( $cards[0]->remove, '1', 'removed' );
 
 done_testing;
