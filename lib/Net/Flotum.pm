@@ -45,7 +45,7 @@ sub _build_charge_api {
 sub load_customer {
     my ( $self, %opts ) = @_;
 
-    my $lazy = 1 if exists $opts{lazy_load} && $opts{lazy_load};
+    my $lazy = 1 if exists $opts{lazy} && $opts{lazy};
     my $cus;
     if ( exists $opts{id} ) {
         $cus = Net::Flotum::Object::Customer->new(
