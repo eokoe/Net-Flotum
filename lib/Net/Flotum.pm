@@ -45,13 +45,14 @@ sub _build_charge_api {
 sub load_customer {
     my ( $self, %opts ) = @_;
 
+    my $lazy = 1 if exists $opts{lazy_load} && $opts{lazy_load};
     my $cus;
     if ( exists $opts{id} ) {
         $cus = Net::Flotum::Object::Customer->new(
             flotum => $self,
             id     => $opts{id}
         );
-        $cus->_load_from_id;
+        $cus->_load_from_id unless $lazy;
     }
     elsif ( exists $opts{remote_id} ) {
         $cus = Net::Flotum::Object::Customer->new(
@@ -80,8 +81,12 @@ sub new_customer {
 
 sub _new_charge {
     my $self = shift;
-
     return $self->charge_api->exec_new_charge(@_);
+}
+
+sub _update_customer {
+    my $self = shift;
+    return $self->customer_api->exec_update_customer(@_);
 }
 
 sub _payment_charge {
@@ -178,6 +183,9 @@ Net-Flotum - use Flotum as your payment gateway
         remote_id => 'foobar',
         # or via id
         id => '0b912879-7c7b-42a1-8f49-722f13b67ae6'
+
+        # lazy load (only works with `id`, lazy loading with `remote_id` is not supported)
+        lazy => 1
 
     );
 

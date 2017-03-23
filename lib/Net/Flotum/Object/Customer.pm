@@ -116,6 +116,12 @@ sub new_charge {
     return $self->flotum->_new_charge( @_, customer => $self );
 }
 
+sub update {
+    my $self = shift;
+
+    return $self->flotum->_update_customer( @_, customer => $self );
+}
+
 1;
 
 __END__

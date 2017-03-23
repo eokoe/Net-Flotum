@@ -154,4 +154,35 @@ sub exec_new_charge {
     return $ret;
 }
 
+sub exec_update_customer {
+    my ( $self, %args ) = @_;
+
+    my $customer = delete $args{customer};
+    croak "missing 'customer'" unless defined $customer;
+
+    my $customer_id = $customer->id;
+
+    my %ret = request_with_retries(
+        logger    => $self->flotum->logger,
+        requester => $self->flotum->requester,
+        name      => 'update customer',
+        method    => 'rest_put',
+        params    => [
+            join( "/", 'customers', $customer_id ),
+            headers => [
+                'Content-Type' => 'application/json',
+                'X-api-key'    => $self->flotum->merchant_api_key,
+            ],
+            code => 202,
+            data => encode_json( { %args } )
+        ]
+    );
+
+    if (%ret) {
+        return $ret{obj};
+    }
+    return;
+}
+
+
 1;
