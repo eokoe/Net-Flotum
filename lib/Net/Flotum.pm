@@ -12,7 +12,7 @@ use namespace::clean;
 use Net::Flotum::API::Charge;
 use Net::Flotum::API::Customer;
 use Net::Flotum::API::RequestHandler;
-
+use Log::Any;
 use Net::Flotum::Object::Customer;
 
 has 'logger'    => ( is => 'ro', builder => '_build_logger',    lazy => 1 );
@@ -27,8 +27,7 @@ sub _build_requester {
 }
 
 sub _build_logger {
-    require Net::Flotum::Logger::Log4perl;
-    Net::Flotum::Logger::Log4perl->new->logger;
+    Log::Any->get_logger;
 }
 
 sub _build_customer_api {
