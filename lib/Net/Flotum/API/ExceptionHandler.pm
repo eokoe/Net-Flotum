@@ -2,6 +2,7 @@ package Net::Flotum::API::ExceptionHandler;
 use strict;
 use warnings;
 use utf8;
+use JSON::MaybeXS;
 
 require Exporter;
 our @ISA    = qw(Exporter);
@@ -37,6 +38,13 @@ sub request_with_retries {
         if ( $res->code == 400 && ref $obj eq 'HASH' && ref $obj->{error} eq 'form_error' ) {
             my $msg = "Invalid data:\n";
             $msg .= "$_ = " . $obj->{form_error}{$_} . "\n" for keys %{ $obj->{form_error} };
+            $logger->error( &log_error_txt( $@, $req, $res ) );
+            $logger->error($msg);
+            die "$msg\n";
+        }elsif ( $res->code == 400 && ref $obj eq 'ARRAY' ) {
+            my $msg = "Invalid data:\n";
+            $msg .= encode_json($_) for @{ $obj };
+
             $logger->error( &log_error_txt( $@, $req, $res ) );
             $logger->error($msg);
             die "$msg\n";

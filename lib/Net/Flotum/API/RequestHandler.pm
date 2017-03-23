@@ -20,7 +20,7 @@ sub _build_stash {
     my $furl = Furl->new(
         agent   => 'Furl Net-Flotum/' . $Net::Flotum::VERSION,
         timeout => $self->timeout,
-        headers => [ 'Accept-Encoding' => 'gzip' ],
+        headers => [ 'Accept-Encoding' => 'gzip', 'X-Features' => 'array-errors' ],
     );
 
     my $st = Stash::REST->new(
