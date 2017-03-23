@@ -16,19 +16,27 @@ isa_ok $customer, 'Net::Flotum::Object::Customer';
 
 diag "adding a credit card";
 
-ok( my $cc = $customer->add_credit_card(), 'add credit card' );
+my $cc = $customer->add_credit_card( callback => 'http://localhostx:2202/too' );
+is( $cc->{fields}{number}, '*CreditCard', 'Credit card number is required' );
+
+ok( $cc->{href}, 'request has an href' );
+like( $cc->{href}, qr|/credit-cards|, 'request href like *credit-cards*' );
+like( $cc->{href}, qr|localhostx|,    'request href has callback' );
+
+ok( $cc->{valid_until}, 'request has a time to expire.' );
 
 my $furl = Furl->new( timeout => 25 );
 
 my $req = $furl->post(
     $cc->{href},
-    [],
+    [ 'content-type' => 'application/json' ],    # headers
     encode_json(
         {
-            name_on_card => 'Renato S de Souza',
-            number       => '5235058636621892',
-            validity     => '201811',
-            csc          => '212',
+            name_on_card => 'This is a fake credit card',
+            csc          => '123',
+            number       => '5268590528188853',
+            validity     => '201801',
+            brand        => 'mastercard'
         }
     ),
 );
@@ -64,7 +72,7 @@ can_ok $charge, 'payment';
 ok(
     my $payment = $charge->payment(
         customer_credit_card_id => $credit_card->{id},
-        csc_check               => '212',
+        csc_check               => '123',
     ),
     'payment',
 );
@@ -75,14 +83,14 @@ diag "capturing";
 
 can_ok $charge, 'capture';
 my $capture;
-for (1..100){
+for ( 1 .. 100 ) {
     diag "waiting 1 seconds";
     sleep 1;
 
-    $capture = eval{$charge->capture( description => "is optional" )};
+    $capture = eval { $charge->capture( description => "is optional" ) };
     next if $@;
 
-    ok($capture, 'capture charge' );
+    ok( $capture, 'capture charge' );
     last;
 }
 
@@ -96,6 +104,18 @@ ok( my $refund = $charge->refund(), 'refund charge' );
 
 is( $refund->{status},             'aborted',         'status aborted' );
 is( $refund->{transaction_status}, 'in-cancellation', 'transaction_status in-cancellation' );
+
+diag "list_credit_cards";
+my @cards = $customer->list_credit_cards;
+is( @cards, 1, 'one card' );
+my $card = $cards[0];
+
+is( $card->mask,             '5268*********853', 'mask ok' );
+is( $card->conjecture_brand, 'mastercard',       'brand is ok' );
+is( $card->validity,         '201801',           'validity is ok' );
+
+diag "removing credit card";
+is( $cards[0]->remove, '1', 'removed' );
 
 done_testing();
 
