@@ -43,11 +43,10 @@ sub request_with_retries {
             die "$msg\n";
         }elsif ( $res->code == 400 && ref $obj eq 'ARRAY' ) {
             my $msg = "Invalid data:\n";
-            $msg .= encode_json($_) for @{ $obj };
-
+            $msg .= encode_json($_) . "\n" for @{ $obj };
             $logger->error( &log_error_txt( $@, $req, $res ) );
             $logger->error($msg);
-            die "$msg\n";
+            die $obj;
         }
 
         $logger->error( &log_error_txt( $@, $req, $res ) );
