@@ -1,6 +1,7 @@
 package Net::Flotum::API::Charge;
 use common::sense;
 use Moo;
+use namespace::clean;
 use MooX::late;
 use Carp;
 use JSON::MaybeXS;

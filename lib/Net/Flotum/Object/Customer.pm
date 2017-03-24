@@ -20,7 +20,6 @@ sub AUTOLOAD {
     my $self = shift;
     my ($call) = $AUTOLOAD =~ /([^:]+)$/;
 
-
     $self->_load_from_id() unless $self->loaded();
 
     my $data = $self->_data;
@@ -41,7 +40,7 @@ sub _check_loaded {
 sub _load_from_id {
     my ($self) = @_;
     my $mydata = $self->flotum->_get_customer_data( id => $self->id );
-    $self->_set__data( $mydata );
+    $self->_set__data($mydata);
     $self->_set_loaded(1);
     return 1;
 }
@@ -50,8 +49,8 @@ sub _load_from_remote_id {
     my ( $self, $remote_id ) = @_;
     my $mydata = $self->flotum->_get_customer_data( remote_id => $remote_id );
     $self->_set_loaded(1);
-    $self->_set_id($mydata->{id});
-    $self->_set__data( $mydata );
+    $self->_set_id( $mydata->{id} );
+    $self->_set__data($mydata);
     return 1;
 }
 

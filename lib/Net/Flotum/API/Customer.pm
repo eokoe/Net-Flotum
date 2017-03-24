@@ -1,6 +1,7 @@
 package Net::Flotum::API::Customer;
 use common::sense;
 use Moo;
+use namespace::clean;
 use Carp;
 use JSON::MaybeXS;
 use Net::Flotum::Object::Charge;
@@ -174,7 +175,7 @@ sub exec_update_customer {
                 'X-api-key'    => $self->flotum->merchant_api_key,
             ],
             code => 202,
-            data => encode_json( { %args } )
+            data => encode_json( {%args} )
         ]
     );
 
@@ -183,6 +184,5 @@ sub exec_update_customer {
     }
     return;
 }
-
 
 1;

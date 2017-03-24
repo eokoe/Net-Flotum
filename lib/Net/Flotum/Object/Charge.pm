@@ -25,19 +25,19 @@ has customer => (
 sub payment {
     my $self = shift;
 
-    return $self->flotum->_payment_charge(@_, charge => $self);
+    return $self->flotum->_payment_charge( @_, charge => $self );
 }
 
 sub capture {
     my $self = shift;
 
-    return $self->flotum->_capture_charge(@_, charge => $self);
+    return $self->flotum->_capture_charge( @_, charge => $self );
 }
 
 sub refund {
     my $self = shift;
 
-    return $self->flotum->_refund_charge(@_, charge => $self);
+    return $self->flotum->_refund_charge( @_, charge => $self );
 }
 
 1;
