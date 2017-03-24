@@ -3,6 +3,7 @@
 /_build*
 /Build
 MYMETA.*
+cover_db/
 !META.json
 /.prove
 .tidyall.d/

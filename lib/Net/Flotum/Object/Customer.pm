@@ -6,7 +6,7 @@ use Carp qw/croak/;
 use Moo;
 our $AUTOLOAD;
 
-#use namespace::clean;
+use namespace::clean;
 use Net::Flotum::Object::CreditCard;
 use URI::Escape;
 
@@ -116,6 +116,9 @@ sub update {
     $self->_set_loaded(0);
     return $self->flotum->_update_customer( @_, customer => $self );
 }
+
+# suppress warning on cleanup
+sub DESTROY {}
 
 1;
 
