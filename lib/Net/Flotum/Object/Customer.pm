@@ -30,13 +30,6 @@ sub AUTOLOAD {
 
 }
 
-sub _check_loaded {
-    my ($self) = @_;
-    return if $self->loaded;
-
-    $self->_load_from_id;
-}
-
 sub _load_from_id {
     my ($self) = @_;
     my $mydata = $self->flotum->_get_customer_data( id => $self->id );
