@@ -56,7 +56,7 @@ sub load_customer {
     elsif ( exists $opts{remote_id} ) {
         $cus = Net::Flotum::Object::Customer->new(
             flotum => $self,
-            id     => 'this workaround is embarrassed'
+            id     => '_ID_IS_REQUIRED_'
         );
         $cus->_load_from_remote_id( $opts{remote_id} );
     }
@@ -174,6 +174,12 @@ Net-Flotum - use Flotum as your payment gateway
         legal_document => '...',
         default_address_neighbourhood => '...'
     );
+
+    # try to load field 'foobar' from $customer
+    $customer->foobar
+
+    # set customer new name
+    $customer->update( name => 'new name' )
 
     # returns a Net::Flotum::Object::Customer
     $customer = $flotum->load_customer(

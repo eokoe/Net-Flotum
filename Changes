@@ -1,6 +1,8 @@
 Revision history for Net-Flotum
 
 {{$NEXT}}
+    - Added support for updating user infomations
+    - Reduced number of tests (but kept same coverage)
 
 0.09  2016-08-15 20:29:56 BRT
     - refactory and fixes on new-charge

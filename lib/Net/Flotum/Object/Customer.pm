@@ -4,7 +4,9 @@ use warnings;
 use utf8;
 use Carp qw/croak/;
 use Moo;
-use namespace::clean;
+our $AUTOLOAD;
+
+#use namespace::clean;
 use Net::Flotum::Object::CreditCard;
 use URI::Escape;
 
@@ -12,45 +14,45 @@ has 'flotum' => ( is => 'ro',  weak_ref => 1, );
 has 'id'     => ( is => 'rwp', required => 1 );
 has 'loaded' => ( is => 'rwp', default  => 0 );
 
-for (
-    qw/
-    name remote_id legal_document
-    default_address_name default_address_zip default_address_street default_address_number
-    default_address_observation default_address_neighbourhood default_address_city default_address_state
-    default_address_inputed_at
-    /
-  ) {
-    has $_ => ( is => 'rwp' );
-    before $_ => sub {
-        my ($self) = @_;
-        return if $self->loaded;
+has '_data' => ( is => 'rwp' );
 
-        $self->_load_from_id;
-      }
+sub AUTOLOAD {
+    my $self = shift;
+    my ($call) = $AUTOLOAD =~ /([^:]+)$/;
+
+
+    $self->_load_from_id() unless $self->loaded();
+
+    my $data = $self->_data;
+
+    return $data->{$call} if exists $data->{$call};
+
+    croak "Object type: ", ( ref $self ), ", illegal method call: $call\n";
+
+}
+
+sub _check_loaded {
+    my ($self) = @_;
+    return if $self->loaded;
+
+    $self->_load_from_id;
 }
 
 sub _load_from_id {
     my ($self) = @_;
     my $mydata = $self->flotum->_get_customer_data( id => $self->id );
-    for my $field ( keys %$mydata ) {
-        if ( $self->can($field) ) {
-            my $method = "_set_$field";
-            $self->$method( $mydata->{$field} );
-        }
-    }
+    $self->_set__data( $mydata );
     $self->_set_loaded(1);
+    return 1;
 }
 
 sub _load_from_remote_id {
     my ( $self, $remote_id ) = @_;
     my $mydata = $self->flotum->_get_customer_data( remote_id => $remote_id );
-    for my $field ( keys %$mydata ) {
-        if ( $self->can($field) ) {
-            my $method = "_set_$field";
-            $self->$method( $mydata->{$field} );
-        }
-    }
     $self->_set_loaded(1);
+    $self->_set_id($mydata->{id});
+    $self->_set__data( $mydata );
+    return 1;
 }
 
 sub add_credit_card {
@@ -119,7 +121,7 @@ sub new_charge {
 sub update {
     my $self = shift;
 
-        $self->_set_loaded(0);
+    $self->_set_loaded(0);
     return $self->flotum->_update_customer( @_, customer => $self );
 }
 
