@@ -1,6 +1,8 @@
 Revision history for Net-Flotum
 
 {{$NEXT}}
+
+0.10  2017-03-23 22:30:59 BRT
     - added support for updating customer Net::Flotum::Object::Customer->update
     - added support for dynamic methods Net::Flotum::Object::Customer
     - Reduced number of tests (but kept same coverage)

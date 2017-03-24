@@ -19,6 +19,12 @@ Net-Flotum - use Flotum as your payment gateway
         default_address_neighbourhood => '...'
     );
 
+    # try to load field 'foobar' from $customer
+    $customer->foobar
+
+    # set customer new name
+    $customer->update( name => 'new name' )
+
     # returns a Net::Flotum::Object::Customer
     $customer = $flotum->load_customer(
 
@@ -26,6 +32,9 @@ Net-Flotum - use Flotum as your payment gateway
         remote_id => 'foobar',
         # or via id
         id => '0b912879-7c7b-42a1-8f49-722f13b67ae6'
+
+        # lazy load (only works with `id`, lazy loading with `remote_id` is not supported)
+        lazy => 1
 
     );
 

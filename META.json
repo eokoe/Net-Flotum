@@ -43,7 +43,7 @@
             "IO::Socket::SSL" : "0",
             "JSON" : "2.34",
             "JSON::MaybeXS" : "0",
-            "Log::Log4perl" : "0",
+            "Log::Any" : "0",
             "Moo" : "0",
             "MooX::late" : "0",
             "Stash::REST" : "0.08",
@@ -76,7 +76,7 @@
          "web" : "https://github.com/eokoe/Net-Flotum"
       }
    },
-   "version" : "0.09",
+   "version" : "0.10",
    "x_contributors" : [
       "Junior Moraes <juniorfvox@gmail.com>",
       "Renato CRON <renato.cron@gmail.com>"
