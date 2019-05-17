@@ -1,6 +1,8 @@
 Revision history for Net-Flotum
 
 {{$NEXT}}
+
+0.11  2019-05-17 22:44:47 JST
     - Changed default URL (new API domain)
     - Fix test 06 (issue #6 on github): use current date as credit-card validity
 
