@@ -1,6 +1,8 @@
 Revision history for Net-Flotum
 
 {{$NEXT}}
+    - Changed default URL (new API domain)
+    - Fix test 06 (issue #6 on github): use current date as credit-card validity
 
 0.10  2017-03-23 22:30:59 BRT
     - added support for updating customer Net::Flotum::Object::Customer->update
